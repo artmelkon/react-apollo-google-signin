@@ -11,7 +11,7 @@ export const GET_ALL_RECIPES = gql`
   }
 `;
 
-export const GET_CURRENT_USER = gql `
+export const GET_CURRENT_USER = gql`
   query {
     getCurrentUser {
       username
@@ -37,18 +37,22 @@ export const GET_RECIPE = gql`
 
 /* Recipes Mutation */
 export const ADD_RECIPE = gql`
-  mutation ($name: String!
+  mutation (
+    $name: String!
     $description: String!
     $category: String
     $instructions: String!
     $imageUrl: String!
-    $username: String) {
-    addRecipe(name: $name
+    $username: String
+  ) {
+    addRecipe(
+      name: $name
       description: $description
       category: $category
       instructions: $instructions
       imageUrl: $imageUrl
-      username: $username) {
+      username: $username
+    ) {
       _id
       name
       category
@@ -56,7 +60,8 @@ export const ADD_RECIPE = gql`
       instructions
       imageUrl
       likes
-      username    }
+      username
+    }
   }
 `;
 
