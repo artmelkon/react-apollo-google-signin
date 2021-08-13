@@ -40,7 +40,7 @@ exports.typeDefs = gql`
   type RootQuery {
     getUsers: [User!]!
     getCurrentUser: User
-    getRecipe(_id:ID!): Recipe
+    getRecipe(_id: ID!): Recipe
     getAllRecipes: [Recipe]
   }
 
@@ -55,7 +55,6 @@ exports.typeDefs = gql`
     ): Recipe
     signupUser(username: String!, email: String!, password: String!): Token
     signinUser(username: String!, password: String!): Token
-    signinGoogle(email: String!): User
   }
 
   schema {

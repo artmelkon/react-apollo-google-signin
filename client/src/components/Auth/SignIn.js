@@ -1,6 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { Mutation } from "@apollo/client/react/components";
+import { useMutation } from "@apollo/client";
+import { auth, signInWithGoogle } from "../../FireBase/FireBase.utils";
 
 import FormInput from "../FormInput/FormInput.component";
 import CustomButton from "../CustomButton/CustomButton.component";
@@ -36,6 +38,26 @@ class SignIn extends React.Component {
     });
   };
 
+  unsubscribeFromAuth = null;
+
+  componentDidMount() {
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (user) => {
+      this.setState({
+        username: user.email,
+        password: user.uid,
+      });
+
+      console.log(user.email);
+      console.log(user.uid);
+      console.log(user.displayName);
+      // await this.props.refetch();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeFromAuth();
+  }
+
   validateForm = () => {
     const { username, password } = this.state;
     const isInvalid = !username || !password;
@@ -44,6 +66,7 @@ class SignIn extends React.Component {
 
   render() {
     const { username, password } = this.state;
+
     return (
       <div className="App">
         <h2 className="App">Sign In</h2>
@@ -75,6 +98,9 @@ class SignIn extends React.Component {
                   disabled={loading || this.validateForm()}
                 >
                   sign in
+                </CustomButton>
+                <CustomButton onClick={signInWithGoogle}>
+                  Google Sign-in
                 </CustomButton>
                 {error && <Error error={error} />}
               </form>
