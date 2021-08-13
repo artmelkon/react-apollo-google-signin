@@ -85,22 +85,24 @@ exports.resolvers = {
           email: username,
         });
 
+        newUser.password = await bcrypt.hash(newUser.password, 10);
+
         newUser.save();
         return {
           token: createToken(newUser, process.env.JWT_SECRET, "1h"),
-          userId: newUser.id,
+          userId: newUser._id,
+        };
+      } else {
+        // // if (!user) throw new Error("User not found!");
+
+        const isValidPassword = await bcrypt.compare(password, user.password);
+        if (!isValidPassword) throw new Error("Invalid Password");
+
+        return {
+          token: createToken(user, process.env.JWT_SECRET, "1h"),
+          userId: user._id.toString(),
         };
       }
-
-      // // if (!user) throw new Error("User not found!");
-
-      const isValidPassword = await bcrypt.compare(password, user.password);
-      if (!isValidPassword) throw new Error("Invalid Password");
-
-      return {
-        token: createToken(user, process.env.JWT_SECRET, "1h"),
-        userId: user._id.toString(),
-      };
     },
   },
 };
