@@ -1,7 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { Mutation } from "@apollo/client/react/components";
-import { useMutation } from "@apollo/client";
 import { auth, signInWithGoogle } from "../../FireBase/FireBase.utils";
 
 import FormInput from "../FormInput/FormInput.component";
@@ -30,7 +29,7 @@ class SignIn extends React.Component {
     event.preventDefault();
 
     signinUser().then(async ({ data }) => {
-      console.log("login user ", data);
+      // console.log("login user ", data);
       localStorage.setItem("token", data.signinUser.token);
       await this.props.refetch();
       this.clearState();
@@ -38,25 +37,26 @@ class SignIn extends React.Component {
     });
   };
 
-  unsubscribeFromAuth = null;
+  // unsubscribeFromAuth = null;
 
-  componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (user) => {
-      this.setState({
-        username: user.email,
-        password: user.uid,
-      });
+  // componentDidMount() {
+  //   this.unsubscribeFromAuth = auth.onAuthStateChanged(async (user) => {
+  //     this.setState({
+  //       username: user.email,
+  //       password: user.uid,
+  //     });
 
-      console.log(user.email);
-      console.log(user.uid);
-      console.log(user.displayName);
-      // await this.props.refetch();
-    });
-  }
+  //     console.log(user.email);
+  //     console.log(user.uid);
+  //     console.log(user.displayName);
+  //     await this.props.refetch();
+  //     // this.props.history.push("/");
+  //   });
+  // }
 
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-  }
+  // componentWillUnmount() {
+  //   this.unsubscribeFromAuth();
+  // }
 
   validateForm = () => {
     const { username, password } = this.state;

@@ -16,6 +16,10 @@ export const GET_CURRENT_USER = gql`
     getCurrentUser {
       username
       email
+      favorites {
+        _id
+        name
+      }
       joinDate
     }
   }
@@ -28,6 +32,7 @@ export const GET_RECIPE = gql`
       name
       category
       description
+      imageUrl
       instructions
       likes
       username
@@ -35,22 +40,42 @@ export const GET_RECIPE = gql`
   }
 `;
 
+export const SEARCH_RECIPES = gql`
+  query SearchRecipes($searchTerm: String) {
+    searchRecipes(searchTerm: $searchTerm) {
+      _id
+      name
+      likes
+    }
+  }
+`;
+
+export const GET_USER_RECIPES = gql`
+  query GetUserRecipes($username: String!) {
+    getUserRecipes(username: $username) {
+      _id
+      name
+      likes
+      username
+    }
+  }
+`;
 /* Recipes Mutation */
 export const ADD_RECIPE = gql`
-  mutation (
+  mutation AddRecipe(
     $name: String!
+    $category: String!
     $description: String!
-    $category: String
-    $instructions: String!
     $imageUrl: String!
-    $username: String
+    $instructions: String!
+    $username: String!
   ) {
     addRecipe(
       name: $name
-      description: $description
       category: $category
-      instructions: $instructions
+      description: $description
       imageUrl: $imageUrl
+      instructions: $instructions
       username: $username
     ) {
       _id
@@ -58,9 +83,16 @@ export const ADD_RECIPE = gql`
       category
       description
       instructions
-      imageUrl
-      likes
       username
+    }
+  }
+`;
+
+export const DELETE_USER_RECIPE = gql`
+  mutation DelteUserRecipe($_id: ID!) {
+    deleteUserRecipe(_id: $_id) {
+      _id
+      name
     }
   }
 `;

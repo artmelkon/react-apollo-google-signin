@@ -36,14 +36,16 @@ exports.typeDefs = gql`
     username: String!
     password: String!
   }
-
+  # QUERIES GO HERE
   type RootQuery {
     getUsers: [User!]!
     getCurrentUser: User
     getRecipe(_id: ID!): Recipe
     getAllRecipes: [Recipe]
+    searchRecipes(searchTerm: String): [Recipe]
+    getUserRecipes(username: String!): [Recipe]
   }
-
+  # MUTATIONS GO HERE
   type RootMutation {
     addRecipe(
       name: String!
@@ -55,6 +57,7 @@ exports.typeDefs = gql`
     ): Recipe
     signupUser(username: String!, email: String!, password: String!): Token
     signinUser(username: String!, password: String!): Token
+    deleteUserRecipe(_id: ID!): Recipe
   }
 
   schema {

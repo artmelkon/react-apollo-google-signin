@@ -2,7 +2,7 @@ import React from "react";
 import { Query } from "@apollo/client/react/components";
 
 import { GET_ALL_RECIPES } from "../queries/index";
-import RecipeItem from './Recipe/RecipeItem';
+import RecipeItem from "./Recipe/RecipeItem";
 import "./App.css";
 
 const App = () => (
@@ -12,7 +12,7 @@ const App = () => (
       {({ data, loading, error }) => {
         if (loading) return <div>Loading...</div>;
         if (error) return <div>Error!</div>;
-        console.log(data);
+        
         return (
           <ul>
             {data.getAllRecipes.map((recipe) => (

@@ -1,7 +1,16 @@
-import React, { Profiler } from 'react';
+import React from "react";
 
-const Profile = () => (
-  <div>Profile</div>
-)
+import UserInfo from "./UserInfo"
+import UserRecipes from "./UserRecipes";
+import withAuth from "../Auth/withAuth";
 
-export default Profile;
+const Profile = ({ session }) => (
+  <div>
+    <UserInfo session={session} />
+    <UserRecipes username={session.getCurrentUser.username} />
+  </div>
+);
+
+export default withAuth((session) => session && session.getCurrentUser)(
+  Profile
+);

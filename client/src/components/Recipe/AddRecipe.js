@@ -1,23 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import { Mutation } from "@apollo/client/react/components";
 
+import withAuth from "../Auth/withAuth";
 import FormInput from "../FormInput/FormInput.component";
 import CustomButton from "../CustomButton/CustomButton.component";
 import Error from "../Error";
 
-import { ADD_RECIPE, GET_ALL_RECIPES } from "../../queries";
+import { ADD_RECIPE, GET_ALL_RECIPES, GET_USER_RECIPES } from "../../queries";
 
 const initialState = {
   name: "",
-  instructions: "",
   category: "Breakfast",
-  imageUrl: "",
   description: "",
+  imageUrl: "",
+  instructions: "",
   username: "",
 };
 
 class AddRecipe extends React.Component {
+  // const [] = useState();
+  // const [] = useState();
+  // const [] = useState();
+  // const [] = useState();
+
   state = { ...initialState };
 
   clearState = () => {
@@ -25,35 +31,37 @@ class AddRecipe extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.session.getCurrentUser.username);
-    this.setState({ username: this.props.session.getCurrentUser.username });
+    const username = this.props.session.getCurrentUser.username;
+    this.setState({ username }, () => console.log("usernamej ", username));
   }
 
   handleChange = (event) => {
     const { name, value } = event.target;
-    this.setState({ [name]: value }, () => console.log(name, ": ", value));
+    this.setState({ [name]: value });
   };
 
   handleSubmit = (event, addRecipe) => {
     event.preventDefault();
     addRecipe().then(({ data }) => {
-      console.log(data);
+      // console.log(data);
       this.clearState();
       this.props.history.push("/");
     });
   };
 
-  updateCache = (cache, {data: {addRecipe}}) => {
-    const { getAllRecipes } = cache.readQuery({ query: GET_ALL_RECIPES });
-    console.log('get query ', getAllRecipes);
-    console.log('from cache ', addRecipe);
+  updateCache = (client, { data: { addRecipe } }) => {
+    console.log(client, addRecipe);
+    const { getAllRecipes } = client.readQuery({ query: GET_ALL_RECIPES });
 
-    cache.writeQuery({
+    console.log("read Caceh Querey ", getAllRecipes);
+    console.log("from data ", addRecipe);
+
+    client.writeQuery({
       query: GET_ALL_RECIPES,
       data: {
-        getAllRecipes: [addRecipe, ...getAllRecipes]
-      }
-    })
+        getAllRecipes: [addRecipe, ...getAllRecipes],
+      },
+    });
   };
 
   validateForm = () => {
@@ -78,12 +86,15 @@ class AddRecipe extends React.Component {
           instructions,
           username,
         }}
+        refetchQueries={() => [
+          { query: GET_USER_RECIPES, variables: { username } },
+        ]}
         update={this.updateCache}
       >
         {(addRecipe, { data, loading, error }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Errpr!</p>;
-          console.log(data);
+
           return (
             <div className="App">
               <h2 className="App">Add Recipe</h2>
@@ -111,21 +122,21 @@ class AddRecipe extends React.Component {
                   onChange={this.handleChange}
                   placeholder="Description"
                 />
-                {/* <FormInput
+                <FormInput
                   type="text"
                   name="imageUrl"
-                  // value={imageUrl}
+                  value={imageUrl}
                   placeholder="Add Image"
                   onChange={this.handleChange}
-                /> */}
-                <FormInput
+                />
+                {/* <FormInput
                   type="file"
                   name="imageUrl"
                   // value={imageUrl}
                   placeholder="Add Image"
                   onChange={this.handleChange}
                   accept=".psd, .tif, .tiff"
-                />
+                /> */}{" "}
                 <textarea
                   name="instructions"
                   value={instructions}
@@ -149,4 +160,6 @@ class AddRecipe extends React.Component {
   }
 }
 
-export default withRouter(AddRecipe);
+export default withAuth((session) => session && session.getCurrentUser)(
+  withRouter(AddRecipe)
+);

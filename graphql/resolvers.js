@@ -23,7 +23,7 @@ exports.resolvers = {
       const recipe = await Recipe.findOne({ _id });
       return recipe;
     },
-    getCurrentUser: async (tot, args, { currentUser, User }) => {
+    getCurrentUser: async (root, args, { currentUser, User }) => {
       if (!currentUser) return null;
 
       const user = await User.findOne({
@@ -34,6 +34,36 @@ exports.resolvers = {
       });
       // console.log(user);
       return user;
+    },
+    searchRecipes: async (root, { searchTerm }, { Recipe }) => {
+      if (searchTerm) {
+        // query will go here
+        const searchResults = await Recipe.find(
+          {
+            $text: { $search: searchTerm },
+          },
+          {
+            score: { $meta: "textScore" },
+          }
+        ).sort({
+          score: { $meta: "textScore" },
+        });
+
+        return searchResults;
+      } else {
+        const recipes = await Recipe.find().sort({
+          likes: "desc",
+          createdDate: "desc",
+        });
+        return recipes;
+      }
+    },
+    getUserRecipes: async (root, { username }, { Recipe }) => {
+      const userRecipes = await Recipe.find({ username }).sort({
+        createdDate: "desc",
+      });
+
+      return userRecipes;
     },
   },
   RootMutation: {
@@ -75,34 +105,39 @@ exports.resolvers = {
 
     signinUser: async (root, { username, password }, { User }) => {
       const user = await User.findOne({ username });
-      console.log(user);
-      if (!user) {
-        console.log(username, "; ", password);
+      if (!user) throw new Error("User not found!");
 
-        const newUser = await new User({
-          username,
-          password,
-          email: username,
-        });
+      // console.log(user);
+      // if (!user) {
+      //   console.log(username, "; ", password);
 
-        newUser.password = await bcrypt.hash(newUser.password, 10);
+      //   const newUser = await new User({
+      //     username,
+      //     password,
+      //     email: username,
+      //   });
 
-        newUser.save();
-        return {
-          token: createToken(newUser, process.env.JWT_SECRET, "1h"),
-          userId: newUser._id,
-        };
-      } else {
-        // // if (!user) throw new Error("User not found!");
+      //   newUser.password = await bcrypt.hash(newUser.password, 10);
 
-        const isValidPassword = await bcrypt.compare(password, user.password);
-        if (!isValidPassword) throw new Error("Invalid Password");
+      //   newUser.save();
+      //   return {
+      //     token: createToken(newUser, process.env.JWT_SECRET, "1h"),
+      //     userId: newUser._id,
+      //   };
+      // }
 
-        return {
-          token: createToken(user, process.env.JWT_SECRET, "1h"),
-          userId: user._id.toString(),
-        };
-      }
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) throw new Error("Invalid Password");
+
+      return {
+        token: createToken(user, process.env.JWT_SECRET, "1h"),
+        userId: user._id.toString(),
+      };
+    },
+    deleteUserRecipe: async (root, { _id }, { Recipe }) => {
+      const recipe = await Recipe.findOneAndRemove({ _id });
+
+      return recipe;
     },
   },
 };
