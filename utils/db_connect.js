@@ -13,7 +13,7 @@ module.exports = async (app) => {
   };
   const { protocol, username, password, host, port, dbname } = dbConnect;
   const MongoDB_URI = `${protocol}${username}:${password}@${host}:${port}/${dbname}`;
-  console.log(MongoDB_URI);
+  // console.log(MongoDB_URI);
   await mongoose
     .connect(MongoDB_URI, {
       useNewUrlParser: true,

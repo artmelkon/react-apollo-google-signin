@@ -139,7 +139,7 @@ exports.resolvers = {
 
       return recipe;
     },
-    LikeRecipe: async (_, { _id, username }, { Recipe, User }) => {
+    likeRecipe: async (_, { _id, username }, { Recipe, User }) => {
       const recipe = await Recipe.findOneAndUpdate(
         { _id },
         { $inc: { likes: 1 } }
@@ -147,6 +147,18 @@ exports.resolvers = {
       const user = await User.findOneAndUpdate(
         { username },
         { $addToSet: { favorites: _id } }
+      );
+
+      return recipe;
+    },
+    unlikeRecipe: async (_, { _id, username }, { Recipe, User }) => {
+      const recipe = await Recipe.findOneAndUpdate(
+        { _id },
+        { $inc: { likes: -1 } }
+      );
+      const user = await User.findOneAndUpdate(
+        { username },
+        { $pull: { favorites: _id } }
       );
 
       return recipe;

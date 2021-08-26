@@ -15,7 +15,9 @@ const UserRecipes = ({ username }) => {
       `Are you sure you want to delet the recipe`
     );
     if (confirmDelete) {
-      deleteUserRecipe().then(({ data }) => console.log(data));
+      deleteUserRecipe().then(({ data }) => { 
+        // console.log(data) 
+      });
     }
   };
 

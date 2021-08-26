@@ -43,7 +43,7 @@ const NavbarAuth = ({ session }) => (
       </li>
     </ul>
     <h4>
-      Welcom,{" "}
+      Welcome,{" "}
       <b>
         {session.getCurrentUser.username.replace(/\b\w/g, (l) =>
           l.toUpperCase()

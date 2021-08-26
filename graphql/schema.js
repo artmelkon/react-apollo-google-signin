@@ -14,6 +14,7 @@ exports.typeDefs = gql`
     imageUrl: String!
     likes: Int
     username: String
+    createdDate: String
     createdAt: String!
     updatedAt: String!
   }
@@ -58,7 +59,8 @@ exports.typeDefs = gql`
     signupUser(username: String!, email: String!, password: String!): Token
     signinUser(username: String!, password: String!): Token
     deleteUserRecipe(_id: ID!): Recipe
-    LikeRecipe(_id: ID!, username: String!): Recipe
+    likeRecipe(_id: ID!, username: String!): Recipe
+    unlikeRecipe(_id: ID!, username: String!): Recipe
   }
 
   schema {

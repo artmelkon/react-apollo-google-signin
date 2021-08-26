@@ -1,23 +1,20 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import { Mutation } from "@apollo/client/react/components";
 
 import withSession from "../withSession";
 import { LIKE_RECIPE, UNLIKE_RECIPE, GET_RECIPE } from "../../queries";
 
-const LikeRecipe = (props) => {
+class LikeRecipe extends React.Component {
   state = {
     liked: false,
     username: "",
   };
 
-  const [isLiked, setIsLaked] = useState(false);
-  const [userName, setUserName] = useState('');
-
   handleClick = (likeRecipe, unlikeRecipe) => {
-    setIsLiked(
-      (prevState) => {
-         setIsLaked(!prevState.liked)
-      },
+    this.setState(
+      (prevState) => ({
+        liked: !prevState.liked,
+      }),
       () => this.handleLike(likeRecipe, unlikeRecipe)
     );
   };
@@ -36,10 +33,6 @@ const LikeRecipe = (props) => {
       });
     }
   };
-
-  useEffect(() => {
-    
-  })
 
   componentDidMount() {
     if (this.props.session.getCurrentUser) {

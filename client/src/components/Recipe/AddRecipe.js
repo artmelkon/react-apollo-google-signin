@@ -32,7 +32,9 @@ class AddRecipe extends React.Component {
 
   componentDidMount() {
     const username = this.props.session.getCurrentUser.username;
-    this.setState({ username }, () => console.log("usernamej ", username));
+    this.setState({ username }, () => {
+      // console.log("usernamej ", username);
+    });
   }
 
   handleChange = (event) => {
@@ -50,11 +52,11 @@ class AddRecipe extends React.Component {
   };
 
   updateCache = (client, { data: { addRecipe } }) => {
-    console.log(client, addRecipe);
+    // console.log(client, addRecipe);
     const { getAllRecipes } = client.readQuery({ query: GET_ALL_RECIPES });
 
-    console.log("read Caceh Querey ", getAllRecipes);
-    console.log("from data ", addRecipe);
+    // console.log("read Caceh Querey ", getAllRecipes);
+    // console.log("from data ", addRecipe);
 
     client.writeQuery({
       query: GET_ALL_RECIPES,
