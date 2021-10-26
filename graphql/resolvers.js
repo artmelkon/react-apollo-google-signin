@@ -83,7 +83,6 @@ exports.resolvers = {
 
       return newRecipe;
     },
-
     signupUser: async (root, { username, email, password }, { User }) => {
       const userExists = await User.findOne({ username });
       if (userExists) throw new Error("User already exists");
@@ -102,7 +101,6 @@ exports.resolvers = {
         userId: user.id,
       };
     },
-
     signinUser: async (root, { username, password }, { User }) => {
       const user = await User.findOne({ username });
       if (!user) throw new Error("User not found!");
